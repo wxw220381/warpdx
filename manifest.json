@@ -1,0 +1,5 @@
+{
+  "version": "2.0.0",
+  "download_url": "https://github.com/WXW220381/warp-login-tool/releases/download/v2.0.0/WARP登录工具_v2.0.0.zip",
+  "note": "初始发布：Warp 终端 IDE 账号切换工具，支持 DPAPI 注入、Firebase Token 刷新、自动守护续杯"
+}

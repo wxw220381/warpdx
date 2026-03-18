@@ -1,0 +1,77 @@
+══════════════════════════════════════════════════════
+  Warp 账号切换工具  v2.0.0
+  适用于 Warp 终端 IDE（https://warp.dev）
+══════════════════════════════════════════════════════
+
+【工具用途】
+  一键切换本地 Warp 终端 IDE 的登录账号。
+  适合多账号轮换使用，无需手动退出/登录。
+
+【工作原理】
+  1. 从账号池读取 Firebase refresh_token
+  2. 调用 Firebase 接口刷新 id_token
+  3. 关闭 Warp 终端进程（warp.exe）
+  4. 用 Windows DPAPI 加密认证数据，写入：
+       %LOCALAPPDATA%\warp\Warp\data\dev.warp.Warp-User
+  5. 更新本地 SQLite 数据库（warp.sqlite）
+  6. 自动重新启动 Warp 终端
+
+  ★ DPAPI 加密绑定当前 Windows 登录用户，他人无法伪造。
+
+【账号池文件】
+  路径：output\warp_accounts_standard.json
+  格式：JSON 数组，每个对象必须包含：
+    - "email"         邮箱地址
+    - "refresh_token" Firebase 刷新令牌
+    - "local_id"      Firebase UID
+    - "status"        账号状态（active / banned / deleted）
+
+  ⚠ 请使用 Warp 终端 IDE 账号注册器生成的账号文件，
+    而非协议直连（warp_protocol_accounts.json）账号。
+    协议直连账号缺少 Firebase Token，无法使用本工具。
+
+【使用步骤】
+  1. 将本 exe 与 output\ 文件夹放在同一目录
+  2. 双击运行 WARP登录工具.exe
+  3. 工具会自动加载 output\warp_accounts_standard.json
+  4. 点击「🚀 一键切换」切换到最佳可用账号
+     或在列表中单击选中，再点「🎯 切换选中」
+  5. 等待日志显示「账号切换完成」，Warp 将自动重启
+
+【自动守护（续杯）】
+  启动守护后，工具每隔 N 秒（默认 60s）检测当前账号状态：
+  - 若账号正常：不做任何操作
+  - 若账号被封禁/删除：自动切换到号池中下一个可用账号
+  守护模式不影响 Warp 的正常使用。
+
+【远程更新 / 账号池拉取】
+  点击右上角「🔄 检查更新」→「配置」，可设置：
+  - 更新 Manifest URL：工具的远程版本信息地址
+  - 账号池远程 URL：远程账号池 JSON 地址
+  - 代理地址：如 127.0.0.1:7890（可选）
+
+【注意事项】
+  · 本工具仅操作当前用户的本地认证文件，不上传任何数据
+  · 切换时 Warp 终端会被强制关闭，请提前保存工作内容
+  · DPAPI 加密依赖当前 Windows 账号，换电脑需重新注入
+  · 若切换失败，原始认证文件已备份为 dev.warp.Warp-User.bak
+
+【常见问题】
+  Q: 点击切换后 Warp 没有自动打开？
+  A: 工具未找到 Warp.exe，请手动启动 Warp 终端。
+     或检查安装路径：%LOCALAPPDATA%\Programs\Warp\Warp.exe
+
+  Q: 提示"账号缺少 refresh_token"？
+  A: 该账号是协议直连账号，不支持本工具，请换用
+     warp_accounts_standard.json 中的账号。
+
+  Q: 切换后 Warp 显示登录失败？
+  A: 若持续失败，该账号可能已被封禁，请使用其他账号。
+
+  Q: 如何批量生成账号？
+  A: 使用同目录下的 Warp 账号注册工具（run.bat）批量注册，
+     生成 warp_accounts_standard.json。
+
+══════════════════════════════════════════════════════
+  工具版本：2.0.0  |  适配 Warp 终端 IDE（warp.dev）
+══════════════════════════════════════════════════════
