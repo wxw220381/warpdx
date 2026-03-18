@@ -1,5 +1,6 @@
 {
-  "version": "1.0.0",
-  "manifest_url": "",
-  "pool_url": ""
+  "version": "2.0.0",
+  "manifest_url": "https://raw.githubusercontent.com/wxw220381/warp-login-tool/master/manifest.json",
+  "pool_url": "",
+  "proxy": ""
 }
